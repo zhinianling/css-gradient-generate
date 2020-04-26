@@ -7,7 +7,7 @@
 
 ## 下载源码
 ```
-git clone git@github.com:zhinianling/css-gradient-visuslizing.git
+git clone git@github.com:zhinianling/css-gradient-generate.git
 ```
 
 ## 安装依赖
