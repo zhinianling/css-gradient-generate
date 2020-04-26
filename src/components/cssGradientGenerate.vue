@@ -1,6 +1,7 @@
 <template>
   <div class="gradient"
        @mousemove="mouseMove"
+       @mouseleave="mouseData.isDown = false"
        @mouseup="mouseData.isDown = false">
     <div class="gradient-left">
       <div class="setting-box"
@@ -110,6 +111,7 @@ export default {
       this.currentItem = item;
     },
     mouseMove(e){
+      e.preventDefault();
       if (this.mouseData.isDown){
         this.currentItem.progress += (e.clientX - this.mouseData.x) / this.styleData.colorLineWidth * 100;
         if (this.currentItem.progress > 100){
