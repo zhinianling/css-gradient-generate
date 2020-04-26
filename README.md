@@ -1,5 +1,5 @@
 # css-gradient-generate
-#[预览](https://github.com/zhinianling/css-gradient-generate/dist/)
+# [预览](https://zhinianling.github.io/css-gradient-generate/dist/)
 
 ### 项目预想是一个可以可视化的css 渐变生成器
 
