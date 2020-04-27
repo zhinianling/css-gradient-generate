@@ -1,6 +1,6 @@
 <template>
   <div class="gradient"
-       @mousemove="mouseMove"
+       @mousedown="canWheelPlanting = false"
        @mouseleave="mouseData.isDown = false"
        @mouseup="mouseData.isDown = false">
     <div class="gradient-left">
@@ -11,26 +11,35 @@
           <option value="line">线性渐变</option>
           <option value="path">径向渐变</option>
         </select>
-        <div class="color-line"
-             :style="{width:styleData.colorLineWidth+'px',backgroundImage:getLineColor}"></div>
-        <div class="mousedown-box"
-             @mousedown="addGradientItem"
-             :style="{width:styleData.colorLineWidth+'px'}"></div>
-        <div class="slider-item"
-             v-for="(item,index) of currentGradientData"
-             :key="index"
-             @mousedown="itemMouseDown($event,item)"
-             :style="{left:item.progress*styleData.colorLineWidth / 100 + styleData.settingBoxPadding - styleData.gradientItemWidth / 2 + 'px',width:styleData.gradientItemWidth+'px'}">
-          <div class="triangle"></div>
-          <div class="item-color-box"
-               :style="{background: item.color}"></div>
+        <div @mousemove="mouseMove" style="height: 70px;">
+          <div class="color-line"
+               :style="{width:styleData.colorLineWidth+'px',backgroundImage:getLineColor}"></div>
+          <div class="mousedown-box"
+               @mousedown="addGradientItem"
+               :style="{width:styleData.colorLineWidth+'px'}"></div>
+          <div class="slider-item"
+               v-for="(item,index) of currentGradientData"
+               :key="index"
+               @mousedown="itemMouseDown($event,item)"
+               :style="{left:item.progress*styleData.colorLineWidth / 100 + styleData.settingBoxPadding - styleData.gradientItemWidth / 2 + 'px',width:styleData.gradientItemWidth+'px'}">
+            <div class="triangle"></div>
+            <div class="item-color-box"
+                 @dblclick="showColorSelect(item)"
+                 :style="{background: item.color}"></div>
+          </div>
         </div>
-        <div class="line-gradient-setting">
-          <p>角度</p>
+        <div class="line-gradient-setting" v-show="gradientType == 'line'">
+          <span>角度</span>
+          <input type="range" min="0" max="360" v-model="angle">
+          <span>{{ angle }}</span>
         </div>
-        <div class="path-gradient-setting">
-          <p>大小</p>
+        <div class="path-gradient-setting" v-show="gradientType == 'path'">
+          <span>大小</span>
+          <input type="range" min="0" max="200" v-model="size">
+          <span>{{ size }}%</span>
           <p>形状</p>
+          <label><input name="Fruit" type="radio" v-model="shape" value="circle" @focus="shape = 'circle'" />圆形</label>
+          <label><input name="Fruit" type="radio" v-model="shape" value="ellipse" @focus="shape = 'ellipse'" />椭圆形</label>
         </div>
       </div>
       <div class="gradient-list">
@@ -45,6 +54,11 @@
       </div>
     </div>
     <div class="gradient-right" :style="{backgroundImage:getGradientColor}"></div>
+    <input type="color"
+           ref="colorSelect"
+           style="display: none"
+           :value="currentItem ? currentItem.color : '#000000'"
+           @change="colorChange">
   </div>
 </template>
 
@@ -75,11 +89,16 @@ export default {
         gradientItemWidth:18,
         settingBoxPadding:15
       },
-      gradientList:[]
+      gradientList:[],
+      angle:0,
+      size:40,
+      shape:'ellipse',
+      canWheelPlanting: true
     }
   },
   created(){
-    this.parseGradients()
+    this.parseGradients();
+    this.wheelPlanting();
   },
   computed:{
     getLineColor(){
@@ -90,9 +109,17 @@ export default {
       return color;
     },
     getGradientColor(){
-      let color = `linear-gradient(90deg`;
-      for (let item of this.currentGradientData){
-        color += `,${item.color} ${item.progress}%`
+      let color = "";
+      if (this.gradientType === 'line'){
+        color = `linear-gradient(${90 + parseFloat(this.angle)}deg`;
+        for (let item of this.currentGradientData){
+          color += `,${item.color} ${item.progress}%`
+        }
+      } else{
+        color = `radial-gradient(${this.shape} at center ${this.size}`;
+        for (let item of this.currentGradientData){
+          color += `,${item.color} ${item.progress}%`
+        }
       }
       return color;
     }
@@ -155,6 +182,19 @@ export default {
     },
     changeCurrentGradient(item){
       this.currentGradientData = JSON.parse(JSON.stringify(item.gradientData));
+    },
+    showColorSelect(item){
+      this.currentItem = item;
+      this.$refs['colorSelect'].click();
+    },
+    colorChange(e){
+      this.currentItem.color = e.target.value;
+    },
+    wheelPlanting(){
+      this.changeCurrentGradient(this.gradientList[Math.floor(Math.random() * this.gradientList.length)]);
+      setTimeout(()=>{
+        if (this.canWheelPlanting) this.wheelPlanting();
+      },3000)
     }
   }
 }
@@ -170,7 +210,6 @@ export default {
 .gradient-left{
   width: 300px;
   height: 100%;
-  border: 1px #ccc solid;
   background: #FFFFFF;
 }
 .setting-box{
