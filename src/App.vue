@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <cssGradientGenerate></cssGradientGenerate>
+<!--    <cssGradientGenerate></cssGradientGenerate>-->
+    <cssGradientGenerateNew></cssGradientGenerateNew>
   </div>
 </template>
 
 <script>
 import cssGradientGenerate from './components/cssGradientGenerate.vue'
+import cssGradientGenerateNew from './components/cssGradientGenerateNew'
 
 export default {
   name: 'App',
   components: {
-    cssGradientGenerate
+    cssGradientGenerate,
+    cssGradientGenerateNew
   }
 }
 </script>

@@ -41,6 +41,8 @@
           <label><input name="Fruit" type="radio" v-model="shape" value="circle" @focus="shape = 'circle'" />圆形</label>
           <label><input name="Fruit" type="radio" v-model="shape" value="ellipse" @focus="shape = 'ellipse'" />椭圆形</label>
         </div>
+        <button>生成图片</button>
+        <button @click="generateCss">生成CSS</button>
       </div>
       <div class="gradient-list">
         <p>渐变列表</p>
@@ -195,6 +197,9 @@ export default {
       setTimeout(()=>{
         if (this.canWheelPlanting) this.wheelPlanting();
       },3000)
+    },
+    generateCss(){
+      console.log(this.getGradientColor);
     }
   }
 }
