@@ -130,8 +130,6 @@ export default {
                 color:color
             };
             this.currentGradientData.push(item);
-            this.currentItem = item;
-            this.mouseData.isDown = true;
             this.currentGradientData = this.currentGradientData.sort((a,b)=>{
                 return a.progress - b.progress;
             });
